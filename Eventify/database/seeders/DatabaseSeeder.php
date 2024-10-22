@@ -18,5 +18,8 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
+        // En un seeder o en una consola de comandos con Tinker
+    User::factory()->admin()->create();
+
     }
 }
