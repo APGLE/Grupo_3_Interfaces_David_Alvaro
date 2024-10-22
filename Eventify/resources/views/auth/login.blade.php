@@ -1,73 +1,164 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Iniciar sesión</title>
 
-@section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Login') }}</div>
+    <style>
+        /* Estilos del encabezado */
+        .header-div {
+            background-color: rgb(108, 92, 57);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            color: rgb(250, 243, 228);
+            padding-right: 70px;
+            padding-left: 70px;
+        }
 
-                <div class="card-body">
-                    <form method="POST" action="{{ route('login') }}">
-                        @csrf
+        .header-text {
+            font-size: 42px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-                        <div class="row mb-3">
-                            <label for="email" class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}</label>
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
 
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
+        .auth-buttons a {
+            text-decoration: none;
+            background-color: rgb(250, 243, 228);
+            color: rgb(108, 92, 57);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: background-color 0.3s, color 0.3s;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
+        .auth-buttons a:hover {
+            background-color: rgb(108, 92, 57);
+            color: rgb(250, 243, 228);
+        }
 
-                        <div class="row mb-3">
-                            <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
+        /* Estilos del cuerpo y del formulario */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: rgb(250, 243, 228);
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
 
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
+        .card {
+            background-color: rgb(250, 243, 228);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+        }
 
-                        <div class="row mb-3">
-                            <div class="col-md-6 offset-md-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
+        .card-header {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
 
-                                    <label class="form-check-label" for="remember">
-                                        {{ __('Remember Me') }}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
+        .form-control {
+            width: 95%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid rgb(108, 92, 57);
+            border-radius: 5px;
+        }
 
-                        <div class="row mb-0">
-                            <div class="col-md-8 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Login') }}
-                                </button>
+        .btn-primary {
+            background-color: rgb(108, 92, 57);
+            color: rgb(250, 243, 228);
+            padding: 10px;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
 
-                                @if (Route::has('password.request'))
-                                    <a class="btn btn-link" href="{{ route('password.request') }}">
-                                        {{ __('Forgot Your Password?') }}
-                                    </a>
-                                @endif
-                            </div>
-                        </div>
-                    </form>
+        .btn-primary:hover {
+            background-color: rgb(250, 243, 228);
+            color: rgb(108, 92, 57);
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .forgot-password a {
+            text-decoration: none;
+            color: rgb(108, 92, 57);
+            transition: color 0.3s;
+        }
+
+        .forgot-password a:hover {
+            color: rgb(54, 43, 28);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Encabezado con botones de login y registro -->
+    <div class="header-div">
+        <p class="header-text">
+            Pagina de Inicio de sesion
+        </p>
+        <div class="auth-buttons">
+            <a href="/login">Iniciar sesión</a>
+            <a href="/register">Registrar</a>
+        </div>
+    </div>
+
+    <!-- Formulario de login -->
+    <div class="container">
+        <div class="card">
+            <div class="card-header">Iniciar sesión</div>
+
+            <form method="POST" action="/login">
+                <!-- Token CSRF -->
+                <input type="hidden" name="_token" value="csrf_token_here">
+
+                <!-- Campo de email -->
+                <input id="email" type="email" class="form-control" name="email" placeholder="Correo electrónico" required autofocus>
+
+                <!-- Campo de contraseña -->
+                <input id="password" type="password" class="form-control" name="password" placeholder="Contraseña" required>
+
+                <!-- Recordar sesión -->
+                <div class="form-check">
+                    <input type="checkbox" name="remember" id="remember">
+                    <label for="remember">Recordar este equipo</label>
                 </div>
+
+                <!-- Botón de inicio de sesión -->
+                <button type="submit" class="btn-primary">Iniciar sesión</button>
+            </form>
+
+            <!-- Enlace para restablecer contraseña -->
+            <div class="forgot-password">
+                <a href="/password/request">¿Olvidaste tu contraseña?</a>
             </div>
         </div>
     </div>
-</div>
-@endsection
+</body>
+</html>
