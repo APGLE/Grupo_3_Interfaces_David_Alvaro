@@ -136,7 +136,7 @@
 
             <form method="POST" action="/login">
                 <!-- Token CSRF -->
-                <input type="hidden" name="_token" value="csrf_token_here">
+                @csrf
 
                 <!-- Campo de email -->
                 <input id="email" type="email" class="form-control" name="email" placeholder="Correo electrónico" required autofocus>
