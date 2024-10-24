@@ -3,15 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\LoginController;
-<<<<<<< Updated upstream
 use App\Http\Controllers\UserController;
-
-
-=======
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
->>>>>>> Stashed changes
 
 /*
 |--------------------------------------------------------------------------
@@ -31,7 +26,6 @@ Route::get('/', function () {
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
 
-<<<<<<< Updated upstream
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::middleware(['auth', 'admin'])->group(function () {
@@ -39,7 +33,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/users/{id}/activate', [UserController::class, 'activate'])->name('admin.users.activate');
     Route::post('/admin/users/{id}/deactivate', [UserController::class, 'deactivate'])->name('admin.users.deactivate');
 });
-=======
 // Ruta para el login
 Route::post('/login', [LoginController::class, 'login']);
 
@@ -71,4 +64,3 @@ Route::get('/email/verify/{id}/{hash}', function (Request $request) {
 
     return redirect('/home')->with('success', 'Email verified successfully!');
 })->middleware(['signed'])->name('verification.verify');
->>>>>>> Stashed changes
