@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail; // Descomenta esta línea
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail // Implementa la interfaz
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -28,8 +28,8 @@ class User extends Authenticatable
         'email_confirmed',
         'deleted',
     ];
-    
 
+    
     /**
      * The attributes that should be hidden for serialization.
      *
