@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class UserController extends Controller
 {
@@ -61,4 +63,37 @@ class UserController extends Controller
     {
         //
     }
+    public function dashboard()
+    {
+    $users = User::where('deleted', 0)->get(); // Excluye los usuarios "soft deleted"
+    return view('admin.dashboard', compact('users'));
+    }
+    public function activate($id)
+    {
+        $user = User::findOrFail($id);
+
+        if ($user->email_confirmed && !$user->actived) {
+            $user->actived = 1;
+            $user->save();
+
+            return redirect()->route('admin.dashboard')->with('status', 'Usuario activado correctamente.');
+        }
+
+        return redirect()->route('admin.dashboard')->with('error', 'No se puede activar este usuario.');
+    }
+
+    public function deactivate($id)
+    {
+        $user = User::findOrFail($id);
+
+        if ($user->actived) {
+            $user->actived = 0;
+            $user->save();
+
+            return redirect()->route('admin.dashboard')->with('status', 'Usuario desactivado correctamente.');
+        }
+
+        return redirect()->route('admin.dashboard')->with('error', 'No se puede desactivar este usuario.');
+    }
+
 }
