@@ -55,4 +55,4 @@ Route::get('/email/verify/{id}/{hash}', function (Request $request) {
     $user->markEmailAsVerified();
 
     return redirect('/home')->with('success', 'Email verified successfully!');
-})->middleware(['signed'])->name('verification.verify');
+})->middleware(['signed'])->name('verification.verify'); 
