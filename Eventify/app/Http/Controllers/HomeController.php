@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class HomeController extends Controller
 {
@@ -14,6 +17,11 @@ class HomeController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+
+        // Definir el permiso 'admin-access' basado en el nombre del usuario
+        Gate::define('admin-access', function ($user) {
+            return strtolower(trim($user->name)) === 'admin';
+        });
     }
 
     /**
@@ -23,6 +31,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        // Cargar todos los usuarios para la vista
+        $users = User::all();
+        return view('home', compact('users'));
     }
 }
