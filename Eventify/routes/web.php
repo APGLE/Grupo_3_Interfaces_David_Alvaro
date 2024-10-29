@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\LoginController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
@@ -23,13 +23,25 @@ Route::post('/register', [RegisterController::class, 'register']);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+// Ruta raíz con logout y redirección
 Route::get('/', function () {
-    return view('welcome');
+    // Desautenticar al usuario si está autenticado y redirigir a bienvenida
+    if (Auth::check()) {
+        Auth::logout(); // Cierra la sesión si está autenticado
+        return redirect('/'); // Redirige a la raíz después de desloguear
+    }
+    return view('welcome'); // Si no está autenticado, muestra la bienvenida
 });
 
+// Ruta de inicio de sesión (LoginController dentro de Auth)
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+// Rutas de registro y autenticación (estándar de Laravel)
 Auth::routes();
 
+// Ruta de inicio para usuarios autenticados
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 // Ruta para el login
@@ -69,4 +81,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/dashboard', [UserController::class, 'dashboard'])->name('admin.dashboard');
     Route::post('/admin/users/{id}/activate', [UserController::class, 'activate'])->name('admin.users.activate');
     Route::post('/admin/users/{id}/deactivate', [UserController::class, 'deactivate'])->name('admin.users.deactivate');
+    Route::get('/admin/users/{id}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
+    Route::put('/admin/users/{id}', [UserController::class, 'update'])->name('admin.users.update');
+    Route::delete('/admin/users/{id}', [UserController::class, 'destroy'])->name('admin.users.destroy');
 });
