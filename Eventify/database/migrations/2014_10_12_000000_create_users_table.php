@@ -17,11 +17,11 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('role', ['a', 'u', 'o'])->default('u');
+            $table->enum('role', ['a', 'u', 'o']);
             $table->string('profile_picture')->nullable();
-            $table->tinyInteger('actived')->default(0);
-            $table->tinyInteger('email_confirmed')->default(0);
-            $table->tinyInteger('deleted')->default(0);
+            $table->boolean('actived')->default(0);
+            $table->boolean('email_confirmed')->default(0);
+            $table->boolean('deleted')->default(0);
             $table->rememberToken();
             $table->timestamps();
         });
