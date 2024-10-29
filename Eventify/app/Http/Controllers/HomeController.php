@@ -20,7 +20,7 @@ class HomeController extends Controller
 
         // Definir el permiso 'admin-access' basado en el nombre del usuario
         Gate::define('admin-access', function ($user) {
-            return strtolower(trim($user->name)) === 'admin';
+            return strtolower(trim($user->role)) === 'a';
         });
     }
 
