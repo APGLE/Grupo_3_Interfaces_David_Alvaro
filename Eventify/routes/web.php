@@ -61,6 +61,9 @@ Route::get('/email/verify/{id}/{hash}', function (Request $request) {
     // Marcar el email como verificado en la base de datos
     $user->markEmailAsVerified();
 
+    $user->email_confirmed = 1;
+    $user->save();
+
     return redirect('/home')->with('success', 'Email verified successfully!');
 })->middleware(['signed'])->name('verification.verify');
 
