@@ -31,8 +31,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        // Cargar todos los usuarios para la vista
-        $users = User::all();
+        // Cargar solo los usuarios no borrados
+        $users = User::where('deleted', 0)->get();
         return view('home', compact('users'));
     }
 }

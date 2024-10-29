@@ -64,9 +64,10 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        //
+    $user = User::findOrFail($id);
+    return view('admin.edit', compact('user'));
     }
 
     /**
@@ -74,15 +75,34 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:users,email,' . $id,
+        'role' => 'required|in:u,o,a',
+    ]);
+
+    $user = User::findOrFail($id);
+
+    $user->name = $request->name;
+    $user->email = $request->email;
+    $user->role = $request->role;
+
+    $user->save();
+
+    return redirect()->route('home')->with('success', 'Usuario actualizado correctamente.');
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+    $user = User::findOrFail($id);
+    $user->deleted = 1;
+    $user->save();
+
+    return redirect()->route('home')->with('success', 'Usuario eliminado exitosamente.');
     }
     public function dashboard()
     {
