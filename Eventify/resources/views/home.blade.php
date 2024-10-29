@@ -23,7 +23,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        .config-button {
+        .config-button, .logout-button {
             font-size: 18px;
             background-color: rgb(250, 243, 228);
             color: rgb(108, 92, 57);
@@ -35,7 +35,7 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
-        .config-button:hover {
+        .config-button:hover, .logout-button:hover {
             background-color: rgb(108, 92, 57);
             color: rgb(250, 243, 228);
         }
@@ -74,9 +74,6 @@
     </style>
 </head>
 
-
-
-
 <body>
     <div class="header-div">
         <p class="header-text">Bienvenido a la página web</p>
@@ -86,6 +83,12 @@
                 <i class="bi bi-gear"></i> Configuración de Admin
             </button>
         @endcan
+
+        <!-- Botón de Cerrar sesión -->
+        <form method="POST" action="{{ route('logout') }}" style="display:inline;">
+            @csrf
+            <button type="submit" class="logout-button">Cerrar sesión</button>
+        </form>
     </div>
 
     @can('admin-access')
@@ -106,7 +109,6 @@
                         </tr>
                     </thead>
                     <tbody>
-
                         @foreach ($users as $user)
                             <tr>
                                 <td>{{ $user->name }}</td>
@@ -115,27 +117,23 @@
                                 <td>
                                     <!-- Activar/Desactivar -->
                                     @if ($user->email_confirmed && !$user->actived)
-                                        <form method="POST" action="{{ route('admin.users.activate', $user->id) }}"
-                                            style="display:inline;">
+                                        <form method="POST" action="{{ route('admin.users.activate', $user->id) }}" style="display:inline;">
                                             @csrf
                                             <button class="btn btn-success btn-sm" type="submit">Activar</button>
                                         </form>
                                     @endif
                                     @if ($user->actived)
-                                        <form method="POST" action="{{ route('admin.users.deactivate', $user->id) }}"
-                                            style="display:inline;">
+                                        <form method="POST" action="{{ route('admin.users.deactivate', $user->id) }}" style="display:inline;">
                                             @csrf
                                             <button class="btn btn-warning btn-sm" type="submit">Desactivar</button>
                                         </form>
                                     @endif
 
                                     <!-- Editar -->
-                                    <a href="{{ route('admin.users.edit', $user->id) }}"
-                                        class="btn btn-info btn-sm">Editar</a>
+                                    <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-info btn-sm">Editar</a>
 
                                     <!-- Eliminar -->
-                                    <form method="POST" action="{{ route('admin.users.destroy', $user->id) }}"
-                                        style="display:inline;">
+                                    <form method="POST" action="{{ route('admin.users.destroy', $user->id) }}" style="display:inline;">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
@@ -148,7 +146,6 @@
             </div>
         </div>
     @endcan
-
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
