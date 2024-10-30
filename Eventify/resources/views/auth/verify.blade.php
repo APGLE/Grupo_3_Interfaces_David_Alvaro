@@ -116,21 +116,20 @@
 
     <div class="container">
         <div class="card">
-            <div class="card-header">Verifique su dirección de correo electrónico</div>
+            <div class="card-header">Verificación de dirección de correo electrónico</div>
 
             <div class="card-body">
                 @if (session('resent'))
                     <div class="alert-success" role="alert">
-                        Se ha enviado un nuevo enlace de verificación a su dirección de correo electrónico.
+                        Se le ha enviado su correo de verificación, revise su correo electronico.
                     </div>
                 @endif
 
-                <p>Antes de continuar, consulte su correo electrónico para obtener un enlace de verificación.</p>
-                <p>Si no recibiste el correo electrónico,</p>
+                <p>Haga click en el botón, para que se le envie el correo electronico para su verificación.</p>
 
                 <form class="d-inline" method="POST" action="{{ route('verification.resend') }}">
                     @csrf
-                    <button type="submit" class="btn-primary">Haz clic aquí para solicitar otro</button>
+                    <button type="submit" class="btn-primary">Haz clic aquí</button>
                 </form>
             </div>
         </div>
