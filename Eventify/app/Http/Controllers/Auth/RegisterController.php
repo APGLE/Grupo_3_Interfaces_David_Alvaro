@@ -38,22 +38,28 @@ class RegisterController extends Controller
         ]);
     }
 
-    // Crear el usuario y enviar el correo de verificación
+
     protected function create(array $data)
-    {
-        // Crear el usuario
-        $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-            'email_verified_at' => null, // Asegúrate de inicializar este campo
-        ]);
+{
+    $user = User::create([
+        'name' => $data['name'],
+        'email' => $data['email'],
+        'password' => Hash::make($data['password']),
+        'email_verified_at' => null, 
+    ]);
 
-        // Enviar correo de verificación
-        Mail::to($user->email)->send(new VerificationEmail($user));
+    $verificationUrl = \URL::signedRoute(
+        'verification.verify',
+        ['id' => $user->id, 'hash' => sha1($user->email)]
+    );
+    
 
-        return $user;
-    }
+    // Enviar el correo de verificación
+    Mail::to($user->email)->send(new VerificationEmail($user));
+
+
+    return $user;
+}
 
     // Método de registro
     public function register(Request $request)

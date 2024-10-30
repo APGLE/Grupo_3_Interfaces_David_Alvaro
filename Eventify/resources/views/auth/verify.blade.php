@@ -125,11 +125,7 @@
                     </div>
                 @endif
 
-                <p>Haga click en el botón, para que se le envie el correo electronico para su verificación.</p>
-
-                <form class="d-inline" method="POST" action="{{ route('verification.resend') }}">
-                    @csrf
-                    <button type="submit" class="btn-primary">Haz clic aquí</button>
+                <p>Vaya a su correo electronico, y alli tendra el enlace para activar su cuenta</p>
                 </form>
             </div>
         </div>
