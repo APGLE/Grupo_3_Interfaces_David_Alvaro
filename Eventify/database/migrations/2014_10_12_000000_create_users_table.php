@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('role', ['a', 'u', 'o'])->default('u');
+            $table->char('role', ['a', 'u', 'o'])->default('u');
             $table->string('profile_picture')->nullable();
             $table->tinyInteger('actived')->default(0);
             $table->tinyInteger('email_confirmed')->default(0);
