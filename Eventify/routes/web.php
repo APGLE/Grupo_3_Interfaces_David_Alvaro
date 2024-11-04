@@ -7,6 +7,7 @@ use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\EventController;
 
 // Rutas de registro
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
@@ -56,3 +57,5 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/', function () {
     return view('welcome');
 });
+//Ruta para los eventos
+Route::post('/events/create', [EventController::class, 'store']);
