@@ -26,15 +26,7 @@ class AuthServiceProvider extends ServiceProvider
 
         // Define the 'admin-access' permission
         Gate::define('admin-access', function (User $user) {
-            // Depuración: Verificar información del usuario
-            if (is_null($user)) {
-                \Log::debug('Gate check: Usuario no autenticado.');
-                return false;
-            }
-
-            \Log::debug('Gate check: Usuario autenticado con rol: ' . $user->role);
-            // Asegurarse de que el rol sea 'admin', ignorando mayúsculas/minúsculas y espacios
-            return strtolower(trim($user->role)) === 'admin';
+            return strtolower(trim($user->role)) === 'admin'; // Asegurarse de que el rol sea 'admin', ignorando mayúsculas/minúsculas y espacios
         });
     }
 }

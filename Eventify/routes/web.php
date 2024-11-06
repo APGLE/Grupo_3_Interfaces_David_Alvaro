@@ -57,5 +57,10 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/', function () {
     return view('welcome');
 });
-//Ruta para los eventos
+
+//Ruta para el Blade Eventods
+Route::get('/events', function () {
+    return view('create_event');
+});
+//ruta para los eventos post
 Route::post('/events/create', [EventController::class, 'store']);

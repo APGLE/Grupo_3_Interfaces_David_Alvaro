@@ -15,8 +15,12 @@ import { createApp } from 'vue';
 
 const app = createApp({});
 
+// Importar y registrar tu componente personalizado
 import ExampleComponent from './components/ExampleComponent.vue';
+import CreateEventComponent from './components/CreateEventComponent.vue';
+
 app.component('example-component', ExampleComponent);
+app.component('create-event-component', CreateEventComponent);
 
 /**
  * The following block of code may be used to automatically register your

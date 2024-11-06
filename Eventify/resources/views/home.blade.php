@@ -90,6 +90,15 @@
             <button type="submit" class="logout-button">Cerrar sesión</button>
         </form>
     </div>
+    <form action="{{ url('/events') }}" method="GET" style="display: inline;">
+    <div style="margin:30px">
+        <button type="submit" style="border-radius:10px;padding:10px;background-color:rgb(108, 92, 57);color:rgb(250, 243, 228);width:100%">
+            Ir a Eventos
+        </button>
+    </div>
+</form>
+
+
 
     @can('admin-access')
         <div class="offcanvas offcanvas-top offcanvas-top-custom" tabindex="-1" id="offcanvasAdmin"

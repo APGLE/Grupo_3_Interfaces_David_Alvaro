@@ -2,52 +2,70 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Event;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class EventController extends Controller
 {
+    /**
+     * Store a newly created event in storage.
+     */
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'category_id' => 'required|integer',
-            'description' => 'required|string',
-            'start_time' => 'required|date',
-            'end_time' => 'required|date|after:start_time',
-            'location' => 'required|string|max:255',
-            'latitude' => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',
-            'price' => 'nullable|numeric',
-            'max_attendees' => 'nullable|integer',
-            'organized_id' => 'required|integer',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
-        ]);
-
-        // Manejo de la carga de la imagen
-        if ($request->hasFile('image')) {
-            $imageName = time() . '.' . $request->image->extension();
-            $request->image->move(public_path('images'), $imageName);
-        } else {
+        try {
+            $validator = Validator::make($request->all(), [
+                'title' => 'required|string|max:255',
+                'category_id' => 'required|integer',
+                'description' => 'required|string',
+                'start_time' => 'required|date',
+                'end_time' => 'required|date|after:start_time',
+                'location' => 'nullable|string|max:255',
+                'latitude' => 'nullable|numeric',
+                'longitude' => 'nullable|numeric',
+                'price' => 'nullable|numeric',
+                'max_attendees' => 'nullable|integer',
+                'organized_id' => 'required|integer',
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+            ]);
+    
+            // Verificar si la validación falla
+            if ($validator->fails()) {
+                return response()->json(['errors' => $validator->errors()], 422);
+            }
+    
+            // Manejo de la carga de la imagen
             $imageName = null;
+            if ($request->hasFile('image')) {
+                $imageName = time() . '.' . $request->image->extension();
+                $request->image->move(public_path('images'), $imageName);
+            }
+    
+            // Crear el evento en la base de datos
+            $event = Event::create([
+                'title' => $request->title,
+                'category_id' => $request->category_id,
+                'description' => $request->description,
+                'start_time' => $request->start_time,
+                'end_time' => $request->end_time,
+                'location' => $request->location,
+                'latitude' => $request->latitude ?? 0.0,
+                'longitude' => $request->longitude ?? 0.0,
+                'price' => $request->price ?? 0.0,
+                'max_attendees' => $request->max_attendees ?? 0,
+                'organized_id' => $request->organized_id,
+                'image_url' => $imageName,
+                'deleted' => 0,
+            ]);
+            
+    
+            // Confirmación de creación de evento
+            return response()->json(['message' => 'Evento creado exitosamente'], 201);        
+        } catch (\Exception $e) {
+            \Log::error("Error al guardar el evento: " . $e->getMessage());
+            return response()->json(['message' => 'Error en el servidor.' . $e->getMessage()], 500);
         }
 
-        // Guardar los datos en la base de datos
-        $event = new Event();
-        $event->title = $request->input('title');
-        $event->category_id = $request->input('category_id');
-        $event->description = $request->input('description');
-        $event->start_time = $request->input('start_time');
-        $event->end_time = $request->input('end_time');
-        $event->location = $request->input('location');
-        $event->latitude = $request->input('latitude');
-        $event->longitude = $request->input('longitude');
-        $event->price = $request->input('price');
-        $event->max_attendees = $request->input('max_attendees');
-        $event->organized_id = $request->input('organized_id');
-        $event->image_url = $imageName;
-        $event->save();
-
-        return response()->json(['message' => 'Evento creado con éxito'], 200);
+        
     }
 }
