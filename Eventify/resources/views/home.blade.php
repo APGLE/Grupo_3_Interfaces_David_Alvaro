@@ -59,17 +59,50 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        .btn-success,
-        .btn-warning,
-        .btn-info,
-        .btn-danger {
-            font-size: 14px;
-            padding: 5px 10px;
-            border-radius: 5px;
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-color: rgb(250, 243, 228);
+
         }
 
-        .btn-close {
-            color: rgb(250, 243, 228);
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .card img {
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .card-title {
+            font-weight: bold;
+            color: rgb(108, 92, 57);
+        }
+
+        .action-buttons {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            gap: 5px;
+            
+        }
+
+        .action-buttons .btn {
+            border-radius: 50%;
+            padding: 8px;
+            
+        }
+
+        .event-card-body {
+            position: relative;
+            padding-top: 15px;
         }
     </style>
 </head>
@@ -84,21 +117,19 @@
             </button>
         @endcan
 
-        <!-- Botón de Cerrar sesión -->
         <form method="POST" action="{{ route('logout') }}" style="display:inline;">
             @csrf
             <button type="submit" class="logout-button">Cerrar sesión</button>
         </form>
     </div>
+    
     <form action="{{ url('/events') }}" method="GET" style="display: inline;">
-    <div style="margin:30px">
-        <button type="submit" style="border-radius:10px;padding:10px;background-color:rgb(108, 92, 57);color:rgb(250, 243, 228);width:100%">
-            Ir a Eventos
-        </button>
-    </div>
-</form>
-
-
+        <div style="margin:30px">
+            <button type="submit" style="border-radius:10px;padding:10px;background-color:rgb(108, 92, 57);color:rgb(250, 243, 228);width:100%">
+                Crear evento
+            </button>
+        </div>
+    </form>
 
     @can('admin-access')
         <div class="offcanvas offcanvas-top offcanvas-top-custom" tabindex="-1" id="offcanvasAdmin"
@@ -124,7 +155,6 @@
                                 <td>{{ $user->email }}</td>
                                 <td>{{ $user->actived ? 'Activo' : 'Inactivo' }}</td>
                                 <td>
-                                    <!-- Activar/Desactivar -->
                                     @if ($user->email_confirmed && !$user->actived)
                                         <form method="POST" action="{{ route('admin.users.activate', $user->id) }}" style="display:inline;">
                                             @csrf
@@ -138,10 +168,8 @@
                                         </form>
                                     @endif
 
-                                    <!-- Editar -->
                                     <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-info btn-sm">Editar</a>
 
-                                    <!-- Eliminar -->
                                     <form method="POST" action="{{ route('admin.users.destroy', $user->id) }}" style="display:inline;">
                                         @csrf
                                         @method('DELETE')
@@ -155,6 +183,47 @@
             </div>
         </div>
     @endcan
+
+    <div class="container mt-4">
+    <div class="row" >
+        @foreach($events as $event)
+            <div class="col-md-4 mb-4" >
+                <div class="card" >
+                    @if($event->image_url)
+                        <img src="{{ $event->image_url }}" class="card-img-top" alt="Imagen del Evento">
+                    @endif
+
+                    <div class="event-card-body card-body">
+                        <div class="action-buttons">
+                            <a href="{{ route('events.edit', $event->id) }}" class="btn btn-sm" style="background-color: rgb(108, 92, 57); color:white">
+                                Editar
+                            </a>
+                            <form action="{{ route('events.destroy', $event->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este evento?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    Borrar
+                                </button>
+                            </form>
+                        </div>
+
+                        <h5 class="card-title">{{ $event->title }}</h5>
+                        <p class="card-text">{{ $event->description }}</p>
+
+                        <ul class="list-unstyled">
+                            <li><strong>Ubicación:</strong> {{ $event->location }}</li>
+                            <li><strong>Inicio:</strong> {{ \Carbon\Carbon::parse($event->start_time)->format('d M Y, h:i A') }}</li>
+                            <li><strong>Fin:</strong> {{ \Carbon\Carbon::parse($event->end_time)->format('d M Y, h:i A') }}</li>
+                            <li><strong>Precio:</strong> ${{ number_format($event->price, 2) }}</li>
+                            <li><strong>Capacidad Máxima:</strong> {{ $event->max_attendees }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    </div>
+</div>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

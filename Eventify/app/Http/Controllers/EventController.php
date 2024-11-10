@@ -64,8 +64,29 @@ class EventController extends Controller
         } catch (\Exception $e) {
             \Log::error("Error al guardar el evento: " . $e->getMessage());
             return response()->json(['message' => 'Error en el servidor.' . $e->getMessage()], 500);
+
+            
         }
 
         
     }
+    public function update(Request $request, $id)
+    {
+        $event = Event::findOrFail($id);
+        $event->update($request->all());
+
+        return redirect()->route('home')->with('success', 'Evento actualizado exitosamente.');
+    }
+    public function destroy($id)
+    {
+        $event = Event::findOrFail($id); 
+        $event->delete(); 
+    
+        return redirect()->route('home')->with('success', 'Evento eliminado exitosamente.');
+    }
+    public function edit($id)
+{
+    $event = Event::findOrFail($id);
+    return view('events.edit', compact('event'));
+}
 }

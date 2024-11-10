@@ -1,4 +1,5 @@
 <template>
+  
   <div class="divCrud">
     <h2 class="form-title">Crear Nuevo Evento</h2>
     <form @submit.prevent="submitEvent" class="event-form">

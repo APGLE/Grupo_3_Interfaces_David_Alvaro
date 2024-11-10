@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Event;
 
 class HomeController extends Controller
 {
@@ -31,8 +32,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        // Cargar solo los usuarios no borrados
         $users = User::where('deleted', 0)->get();
-        return view('home', compact('users'));
+        $events = Event::all();    
+        return view('home', compact('users', 'events'));
     }
 }

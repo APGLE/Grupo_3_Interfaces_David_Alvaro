@@ -64,3 +64,10 @@ Route::get('/events', function () {
 });
 //ruta para los eventos post
 Route::post('/events/create', [EventController::class, 'store']);
+Route::get('/events/{id}', [EventController::class, 'show'])->name('events.show');
+Route::get('/events/{id}/edit', [EventController::class, 'edit'])->name('events.edit');
+
+
+Route::delete('/events/{id}', [EventController::class, 'destroy'])->name('events.destroy');
+Route::put('/events/{id}', [EventController::class, 'update'])->name('events.update');
+
