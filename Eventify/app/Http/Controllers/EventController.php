@@ -85,8 +85,8 @@ class EventController extends Controller
         return redirect()->route('home')->with('success', 'Evento eliminado exitosamente.');
     }
     public function edit($id)
-{
-    $event = Event::findOrFail($id);
-    return view('events.edit', compact('event'));
-}
+    {
+        $event = Event::findOrFail($id);
+        return view('events.edit', compact('event'));
+    }
 }
