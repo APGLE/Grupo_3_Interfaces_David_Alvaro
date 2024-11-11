@@ -37,7 +37,7 @@ Route::get('/email/verify/{id}/{hash}', function (Request $request) {
     }
 
     $user->markEmailAsVerified();
-    $user->email_confirmed = 1; // Asumiendo que este campo existe en tu tabla de usuarios
+    $user->email_confirmed = 1;
     $user->save();
 
     return redirect('/home')->with('success', '¡Correo verificado exitosamente!');
@@ -59,8 +59,8 @@ Route::get('/', function () {
 });
 
 //Ruta para el Blade Eventods
-Route::get('/events', function () {
-    return view('create_event');
+Route::get('/events/create', function () {
+    return view('events.create_event');
 });
 //ruta para los eventos post
 Route::post('/events/create', [EventController::class, 'store']);

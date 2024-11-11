@@ -123,7 +123,7 @@
         </form>
     </div>
     
-    <form action="{{ url('/events') }}" method="GET" style="display: inline;">
+    <form action="{{ url('/events/create') }}" method="GET" style="display: inline;">
         <div style="margin:30px">
             <button type="submit" style="border-radius:10px;padding:10px;background-color:rgb(108, 92, 57);color:rgb(250, 243, 228);width:100%">
                 Crear evento

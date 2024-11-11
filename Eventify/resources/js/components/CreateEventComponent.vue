@@ -96,6 +96,7 @@ export default {
         if (response.ok) {
           alert('Evento creado con éxito');
           this.resetForm();
+          window.location.href = '/home';
         } else {
           alert('Error al crear el evento');
         }
