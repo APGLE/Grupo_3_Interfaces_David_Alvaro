@@ -25,23 +25,22 @@ class EventController extends Controller
                 'longitude' => 'nullable|numeric',
                 'price' => 'nullable|numeric',
                 'max_attendees' => 'nullable|integer',
-                'organized_id' => 'required|integer',
                 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
             ]);
-    
+
             // Verificar si la validación falla
             if ($validator->fails()) {
                 return response()->json(['errors' => $validator->errors()], 422);
             }
-    
+
             // Manejo de la carga de la imagen
             $imageName = null;
             if ($request->hasFile('image')) {
                 $imageName = time() . '.' . $request->image->extension();
                 $request->image->move(public_path('images'), $imageName);
             }
-    
-            // Crear el evento en la base de datos
+
+            // Crear el evento en la base de datos con el ID del usuario autenticado como organized_id
             $event = Event::create([
                 'title' => $request->title,
                 'category_id' => $request->category_id,
@@ -53,23 +52,19 @@ class EventController extends Controller
                 'longitude' => $request->longitude ?? 0.0,
                 'price' => $request->price ?? 0.0,
                 'max_attendees' => $request->max_attendees ?? 0,
-                'organized_id' => $request->organized_id,
+                'organized_id' => auth()->id(),  // Asignar el ID del usuario autenticado
                 'image_url' => $imageName,
                 'deleted' => 0,
             ]);
-            
-    
+
             // Confirmación de creación de evento
-            return response()->json(['message' => 'Evento creado exitosamente'], 201);        
+            return response()->json(['message' => 'Evento creado exitosamente'], 201);
         } catch (\Exception $e) {
             \Log::error("Error al guardar el evento: " . $e->getMessage());
             return response()->json(['message' => 'Error en el servidor.' . $e->getMessage()], 500);
-
-            
         }
-
-        
     }
+
     public function update(Request $request, $id)
     {
         $event = Event::findOrFail($id);
@@ -77,13 +72,15 @@ class EventController extends Controller
 
         return redirect()->route('home')->with('success', 'Evento actualizado exitosamente.');
     }
+
     public function destroy($id)
     {
         $event = Event::findOrFail($id); 
         $event->delete(); 
-    
+
         return redirect()->route('home')->with('success', 'Evento eliminado exitosamente.');
     }
+
     public function edit($id)
     {
         $event = Event::findOrFail($id);

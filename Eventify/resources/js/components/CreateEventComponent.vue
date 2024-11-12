@@ -32,8 +32,12 @@
         <input class="form-input" type="text" v-model="event.location" required />
       </div>
       <div class="form-group">
-        <label for="organized_id">ID del Organizador:</label>
-        <input class="form-input" type="number" v-model="event.organized_id" required />
+        <label for="price">Precio:</label>
+        <input class="form-input" type="number" v-model="event.price" required />
+      </div>
+      <div class="form-group">
+        <label for="max_attendees">Cantidad de Personas:</label>
+        <input class="form-input" type="number" v-model="event.max_attendees" required />
       </div>
       <div class="form-group">
         <label for="image">Imagen:</label>
@@ -46,6 +50,12 @@
 
 <script>
 export default {
+  props: {
+    organizerId: {
+      type: Number,
+      required: true
+    }
+  },
   data() {
     return {
       event: {
@@ -55,11 +65,9 @@ export default {
         end_time: '',
         description: '',
         location: '',
-        latitude: '',
-        longitude: '',
         price: '',
         max_attendees: '',
-        organized_id: ''
+        organized_id: this.organizerId
       },
       image: null
     };
@@ -73,16 +81,15 @@ export default {
 
       try {
         const formData = new FormData();
+        // Añadimos los datos del evento
         formData.append('title', this.event.title);
         formData.append('category_id', this.event.category_id);
         formData.append('description', this.event.description);
         formData.append('start_time', this.event.start_time);
         formData.append('end_time', this.event.end_time);
         formData.append('location', this.event.location);
-        formData.append('latitude', this.event.latitude || 0);
-        formData.append('longitude', this.event.longitude || 0);
-        formData.append('price', this.event.price || 0);
-        formData.append('max_attendees', this.event.max_attendees || 0);
+        formData.append('price', this.event.price);
+        formData.append('max_attendees', this.event.max_attendees);
         formData.append('organized_id', this.event.organized_id);
         formData.append('image', this.image);
 
@@ -116,11 +123,9 @@ export default {
         end_time: '',
         description: '',
         location: '',
-        latitude: '',
-        longitude: '',
         price: '',
         max_attendees: '',
-        organized_id: ''
+        organized_id: this.organizerId
       };
       this.image = null;
     }
