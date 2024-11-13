@@ -104,6 +104,41 @@
             position: relative;
             padding-top: 15px;
         }
+
+.custom-navbar {
+    background-color: rgb(108, 92, 57);
+    border-radius: 8px; 
+    display: inline-block; 
+    padding: 8px 15px; 
+    margin-left: 31px;
+}
+
+
+.custom-navbar .nav-link {
+    color: white;
+}
+
+
+.custom-dropdown {
+    background-color: rgb(255, 255, 255);
+    border-radius: 8px;
+    border: none;
+    min-width: 100px;
+}
+
+.custom-dropdown .dropdown-item {
+    color: black;
+    padding: 10px 20px;
+}
+
+
+.custom-dropdown .dropdown-item:hover {
+    background-color: rgb(108, 92, 57);
+    color: white;
+    border-radius: 8px;
+}
+
+
     </style>
 </head>
 
@@ -183,6 +218,39 @@
             </div>
         </div>
     @endcan
+
+    <nav class="navbar navbar-expand-lg custom-navbar">
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Eventos
+                </a>
+                <div class="dropdown-menu custom-dropdown">
+                    <a class="dropdown-item" href="{{ route('musica') }}">Música</a>
+                    <a class="dropdown-item" href="{{ route('deporte') }}">Deporte</a>
+                    <a class="dropdown-item" href="{{ route('tecnologia') }}">Tecnología</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container mt-4">
+
+    @if ($events->isEmpty())
+        <div class="alert alert-warning">
+            No hay eventos en esta categoría.
+        </div>
+    @endif
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+
+
 
     <div class="container mt-4">
     <div class="row" >

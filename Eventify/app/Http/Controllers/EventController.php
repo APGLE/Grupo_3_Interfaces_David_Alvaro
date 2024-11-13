@@ -86,4 +86,22 @@ class EventController extends Controller
         $event = Event::findOrFail($id);
         return view('events.edit', compact('event'));
     }
+    public function musica()
+{
+    $eventos = Event::where('category_id', 1)->get();
+    return view('home', ['events' => $eventos, 'categoria' => 'Música']);
+}
+
+public function deporte()
+{
+    $eventos = Event::where('category_id', 2)->get();
+    return view('home', ['events' => $eventos, 'categoria' => 'Deporte']);
+}
+
+public function tecnologia()
+{
+    $eventos = Event::where('category_id', 3)->get();
+    return view('home', ['events' => $eventos, 'categoria' => 'Tecnología']);
+}
+
 }

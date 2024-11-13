@@ -71,3 +71,8 @@ Route::get('/events/{id}/edit', [EventController::class, 'edit'])->name('events.
 Route::delete('/events/{id}', [EventController::class, 'destroy'])->name('events.destroy');
 Route::put('/events/{id}', [EventController::class, 'update'])->name('events.update');
 
+Route::get('/musica', [EventController::class, 'musica'])->name('musica');
+Route::get('/deporte', [EventController::class, 'deporte'])->name('deporte');
+Route::get('/tecnologia', [EventController::class, 'tecnologia'])->name('tecnologia');
+
+
