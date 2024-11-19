@@ -9,23 +9,25 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\InformesController;
 
-// Rutas de registro
+
+//Rutas de registro
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
 
-// Rutas de inicio de sesión
+//Rutas de inicio de sesión
 Route::post('/login', [LoginController::class, 'login']);
 
-// Rutas de autenticación con verificación de correo
+//Rutas de autenticación con verificación de correo
 Auth::routes(['verify' => true]);
 
-// Ruta protegida por verificación de correo
+//Ruta protegida por verificación de correo
 Route::get('/home', [HomeController::class, 'index'])
      ->name('home')
      ->middleware('verified');
 
-// Ruta de verificación de correo
+//Ruta de verificación de correo
 Route::get('/email/verify/{id}/{hash}', function (Request $request) {
     $user = \App\Models\User::findOrFail($request->route('id'));
 
@@ -44,7 +46,7 @@ Route::get('/email/verify/{id}/{hash}', function (Request $request) {
     return redirect('/home')->with('success', '¡Correo verificado exitosamente!');
 })->middleware(['signed'])->name('verification.verify');
 
-// Rutas del administrador protegidas por autenticación
+//Rutas del administrador protegidas por autenticación
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin/dashboard', [UserController::class, 'dashboard'])->name('admin.dashboard');
     Route::post('/admin/users/{id}/activate', [UserController::class, 'activate'])->name('admin.users.activate');
@@ -54,7 +56,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/admin/users/{id}', [UserController::class, 'destroy'])->name('admin.users.destroy');
 });
 
-// Ruta para la página de inicio
+//Ruta para la página de inicio
 Route::get('/', function () {
     return view('welcome');
 });
@@ -63,7 +65,8 @@ Route::get('/', function () {
 Route::get('/events/create', function () {
     return view('events.create_event');
 });
-//ruta para los eventos post
+
+//Ruta para los eventos post
 Route::post('/events/create', [EventController::class, 'store']);
 Route::get('/events/{id}', [EventController::class, 'show'])->name('events.show');
 Route::get('/events/{id}/edit', [EventController::class, 'edit'])->name('events.edit');
@@ -76,7 +79,8 @@ Route::get('/musica', [EventController::class, 'musica'])->name('musica');
 Route::get('/deporte', [EventController::class, 'deporte'])->name('deporte');
 Route::get('/tecnologia', [EventController::class, 'tecnologia'])->name('tecnologia');
 
-//PAra el envio del pdf con el correo
-
+//Ruta para el envio del pdf con el correo
 Route::post('/enviar.pdf',[MailController::class, 'enviarpdf'])->name('enviar.pdf');
 
+//Ruta para llamar al pdf
+Route::get('/pdf', [InformesController::class, 'general'])->name('pdf');
