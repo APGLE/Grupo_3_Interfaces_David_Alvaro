@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+use App\Models\EventAttendee;
+
+
 
 class EventController extends Controller
 {
-    /**
-     * Store a newly created event in storage.
-     */
+
     public function store(Request $request)
     {
         try {
@@ -103,5 +105,44 @@ public function tecnologia()
     $eventos = Event::where('category_id', 3)->get();
     return view('home', ['events' => $eventos, 'categoria' => 'Tecnología']);
 }
+
+public function subscribe($eventId)
+    {
+        $userId = auth()->user()->id;
+
+        $attendee = EventAttendee::where('event_id', $eventId)
+                                 ->where('user_id', $userId)
+                                 ->where('deleted', 0)
+                                 ->first();
+
+        if (!$attendee) {
+            EventAttendee::create([
+                'event_id' => $eventId,
+                'user_id' => $userId,
+                'status' => 'CONFIRMED',
+                'register_at' => now(),
+                'deleted' => 0, 
+            ]);
+        }
+
+        return back();
+    }
+
+    public function unsubscribe($eventId)
+    {
+        $userId = auth()->user()->id;
+
+        $attendee = EventAttendee::where('event_id', $eventId)
+                                 ->where('user_id', $userId)
+                                 ->where('deleted', 0)
+                                 ->first();
+
+        if ($attendee) {
+            $attendee->update(['deleted' => 1, 'status' => 'CANCELLED']);
+        }
+
+        return back(); 
+    }
+
 
 }

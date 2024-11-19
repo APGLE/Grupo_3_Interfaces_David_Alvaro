@@ -9,7 +9,6 @@ class Event extends Model
 {
     use HasFactory;
 
-    // Definir los atributos que se pueden asignar masivamente
     protected $fillable = [
         'title',
         'category_id',
@@ -24,4 +23,12 @@ class Event extends Model
         'organized_id',
         'image_url'
     ];
+
+
+    public function attendees()
+    {
+        return $this->hasMany(EventAttendee::class, 'event_id');
+    }
+
+
 }

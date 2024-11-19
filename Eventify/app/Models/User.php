@@ -49,4 +49,13 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+
+    public function events()
+    {
+        return $this->belongsToMany(Event::class, 'event_attendees', 'user_id', 'event_id')
+            ->withPivot('status', 'register_at', 'deleted')
+            ->wherePivot('deleted', 0);
+    }
+
 }

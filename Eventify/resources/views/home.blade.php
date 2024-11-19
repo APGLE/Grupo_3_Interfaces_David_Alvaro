@@ -137,19 +137,12 @@
     color: white;
     border-radius: 8px;
 }
-.div-navbar{
-    display: flex;
-    align-items: center;
-    justify-content: end;
-    margin: 30px;
-}
 
 
     </style>
 </head>
 
 <body>
-    
     <div class="header-div">
         <p class="header-text">Bienvenido a la página web</p>
         @can('admin-access')
@@ -172,25 +165,7 @@
             </button>
         </div>
     </form>
-    <div class="div-navbar">
-        <nav class="navbar navbar-expand custom-navbar">
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Eventos
-                        </a>
-                        <div class="dropdown-menu custom-dropdown">
-                            <a class="dropdown-item" href="{{ route('musica') }}">Música</a>
-                            <a class="dropdown-item" href="{{ route('deporte') }}">Deporte</a>
-                            <a class="dropdown-item" href="{{ route('tecnologia') }}">Tecnología</a>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-    </div>
-    
+
     @can('admin-access')
         <div class="offcanvas offcanvas-top offcanvas-top-custom" tabindex="-1" id="offcanvasAdmin"
             aria-labelledby="offcanvasAdminLabel">
@@ -244,7 +219,22 @@
         </div>
     @endcan
 
-
+    <nav class="navbar navbar-expand-lg custom-navbar">
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Eventos
+                </a>
+                <div class="dropdown-menu custom-dropdown">
+                    <a class="dropdown-item" href="{{ route('musica') }}">Música</a>
+                    <a class="dropdown-item" href="{{ route('deporte') }}">Deporte</a>
+                    <a class="dropdown-item" href="{{ route('tecnologia') }}">Tecnología</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
 
 <div class="container mt-4">
 
@@ -260,30 +250,18 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
 
-<div>
+
+
 <div class="container mt-4">
-    <div class="row" >
+    <div class="row">
         @foreach($events as $event)
-            <div class="col-md-4 mb-4" >
-                <div class="card" >
+            <div class="col-md-4 mb-4">
+                <div class="card">
                     @if($event->image_url)
                         <img src="{{ $event->image_url }}" class="card-img-top" alt="Imagen del Evento">
                     @endif
 
                     <div class="event-card-body card-body">
-                        <div class="action-buttons">
-                            <a href="{{ route('events.edit', $event->id) }}" class="btn btn-sm" style="background-color: rgb(108, 92, 57); color:white">
-                                Editar
-                            </a>
-                            <form action="{{ route('events.destroy', $event->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este evento?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm">
-                                    Borrar
-                                </button>
-                            </form>
-                        </div>
-
                         <h5 class="card-title">{{ $event->title }}</h5>
                         <p class="card-text">{{ $event->description }}</p>
 
@@ -294,23 +272,41 @@
                             <li><strong>Precio:</strong> ${{ number_format($event->price, 2) }}</li>
                             <li><strong>Capacidad Máxima:</strong> {{ $event->max_attendees }}</li>
                         </ul>
+
+                        @if(Auth::check())
+                            @php
+                                $attendee = DB::table('event_attendees')
+                                    ->where('event_id', $event->id)
+                                    ->where('user_id', auth()->user()->id)
+                                    ->where('deleted', 0)
+                                    ->first();
+                            @endphp
+
+                            @if($attendee)
+                                <form action="{{ route('events.unsubscribe', $event->id) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn btn-warning btn-sm">
+                                        Desapuntarse
+                                    </button>
+                                </form>
+                            @else
+                                <form action="{{ route('events.subscribe', $event->id) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn btn-success btn-sm">
+                                        Apuntarse
+                                    </button>
+                                </form>
+                            @endif
+                        @endif
                     </div>
                 </div>
             </div>
         @endforeach
     </div>
 </div>
-</div>
 
 
-<div style="margin:30px">
-    <form action="{{ route('enviar.pdf') }}" method="POST">
-        @csrf 
-        <button type="submit" style="border-radius:10px;padding:10px;               background-color:rgb(108, 92, 57);color:rgb(250, 243, 228);width:100%">
-                Exportar y enviar por mail (PDF)
-        </button>
-    </form>
-</div>
+
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

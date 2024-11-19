@@ -76,7 +76,8 @@ Route::get('/musica', [EventController::class, 'musica'])->name('musica');
 Route::get('/deporte', [EventController::class, 'deporte'])->name('deporte');
 Route::get('/tecnologia', [EventController::class, 'tecnologia'])->name('tecnologia');
 
-//PAra el envio del pdf con el correo
-
+//Para el envio del pdf con el correo
 Route::post('/enviar.pdf',[MailController::class, 'enviarpdf'])->name('enviar.pdf');
 
+Route::post('/events/{event}/subscribe', [EventController::class, 'subscribe'])->name('events.subscribe');
+Route::post('/events/{event}/unsubscribe', [EventController::class, 'unsubscribe'])->name('events.unsubscribe');
