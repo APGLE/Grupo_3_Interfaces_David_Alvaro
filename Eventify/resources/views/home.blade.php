@@ -138,7 +138,12 @@
     border-radius: 8px;
 }
 
-
+.div-navbar{
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    margin: 30px;
+}
     </style>
 </head>
 
@@ -262,6 +267,18 @@
                     @endif
 
                     <div class="event-card-body card-body">
+                    <div class="action-buttons">
+                            <a href="{{ route('events.edit', $event->id) }}" class="btn btn-sm" style="background-color: rgb(108, 92, 57); color:white">
+                                Editar
+                            </a>
+                            <form action="{{ route('events.destroy', $event->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este evento?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    Borrar
+                                </button>
+                            </form>
+                        </div>
                         <h5 class="card-title">{{ $event->title }}</h5>
                         <p class="card-text">{{ $event->description }}</p>
 
@@ -304,7 +321,17 @@
         @endforeach
     </div>
 </div>
+</div>
 
+
+<div style="margin:30px">
+    <form action="{{ route('enviar.pdf') }}" method="POST">
+        @csrf 
+        <button type="submit" style="border-radius:10px;padding:10px;               background-color:rgb(108, 92, 57);color:rgb(250, 243, 228);width:100%">
+                Exportar y enviar por mail (PDF)
+        </button>
+    </form>
+</div>
 
 
 
