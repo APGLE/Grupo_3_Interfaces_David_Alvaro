@@ -137,12 +137,19 @@
     color: white;
     border-radius: 8px;
 }
+.div-navbar{
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    margin: 30px;
+}
 
 
     </style>
 </head>
 
 <body>
+    
     <div class="header-div">
         <p class="header-text">Bienvenido a la página web</p>
         @can('admin-access')
@@ -165,7 +172,25 @@
             </button>
         </div>
     </form>
-
+    <div class="div-navbar">
+        <nav class="navbar navbar-expand custom-navbar">
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Eventos
+                        </a>
+                        <div class="dropdown-menu custom-dropdown">
+                            <a class="dropdown-item" href="{{ route('musica') }}">Música</a>
+                            <a class="dropdown-item" href="{{ route('deporte') }}">Deporte</a>
+                            <a class="dropdown-item" href="{{ route('tecnologia') }}">Tecnología</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    
     @can('admin-access')
         <div class="offcanvas offcanvas-top offcanvas-top-custom" tabindex="-1" id="offcanvasAdmin"
             aria-labelledby="offcanvasAdminLabel">
@@ -219,22 +244,7 @@
         </div>
     @endcan
 
-    <nav class="navbar navbar-expand-lg custom-navbar">
-    <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Eventos
-                </a>
-                <div class="dropdown-menu custom-dropdown">
-                    <a class="dropdown-item" href="{{ route('musica') }}">Música</a>
-                    <a class="dropdown-item" href="{{ route('deporte') }}">Deporte</a>
-                    <a class="dropdown-item" href="{{ route('tecnologia') }}">Tecnología</a>
-                </div>
-            </li>
-        </ul>
-    </div>
-</nav>
+
 
 <div class="container mt-4">
 
@@ -250,9 +260,8 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
 
-
-
-    <div class="container mt-4">
+<div>
+<div class="container mt-4">
     <div class="row" >
         @foreach($events as $event)
             <div class="col-md-4 mb-4" >
@@ -290,6 +299,17 @@
             </div>
         @endforeach
     </div>
+</div>
+</div>
+
+
+<div style="margin:30px">
+    <form action="{{ route('enviar.pdf') }}" method="POST">
+        @csrf 
+        <button type="submit" style="border-radius:10px;padding:10px;               background-color:rgb(108, 92, 57);color:rgb(250, 243, 228);width:100%">
+                Exportar y enviar por mail (PDF)
+        </button>
+    </form>
 </div>
 
 
