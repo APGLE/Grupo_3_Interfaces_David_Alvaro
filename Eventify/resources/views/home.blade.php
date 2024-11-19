@@ -326,9 +326,9 @@
 
 <div style="margin:30px">
     <form action="{{ route('enviar.pdf') }}" method="POST">
-        @csrf 
-        <button type="submit" style="border-radius:10px;padding:10px;               background-color:rgb(108, 92, 57);color:rgb(250, 243, 228);width:100%">
-                Exportar y enviar por mail (PDF)
+        @csrf
+        <button type="submit" style="border-radius:10px;padding:10px;background-color:rgb(108, 92, 57);color:rgb(250, 243, 228);width:100%">
+            Exportar y enviar por mail (PDF)
         </button>
     </form>
 </div>
