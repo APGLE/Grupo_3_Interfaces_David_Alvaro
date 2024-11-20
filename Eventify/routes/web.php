@@ -81,3 +81,10 @@ Route::post('/enviar.pdf',[MailController::class, 'enviarpdf'])->name('enviar.pd
 
 Route::post('/events/{event}/subscribe', [EventController::class, 'subscribe'])->name('events.subscribe');
 Route::post('/events/{event}/unsubscribe', [EventController::class, 'unsubscribe'])->name('events.unsubscribe');
+
+
+Route::get('/home/registrados', [EventController::class, 'Registrados'])->name('Registrados');
+Route::get('/home/noregistrados', [EventController::class, 'noRegistrados'])->name('Noregistrados');
+
+
+

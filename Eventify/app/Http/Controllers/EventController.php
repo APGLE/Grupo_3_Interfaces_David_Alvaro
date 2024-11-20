@@ -106,6 +106,41 @@ public function tecnologia()
     return view('home', ['events' => $eventos, 'categoria' => 'Tecnología']);
 }
 
+public function registrados()
+{
+    $eventosRegistrados = DB::table('event_attendees')
+        ->join('events', 'event_attendees.event_id', '=', 'events.id')
+        ->join('users', 'events.organized_id', '=', 'users.id')
+        ->where('event_attendees.status', 'CONFIRMED')
+        ->select('event_attendees.register_at', 'events.title', 'events.image_url', 'users.name as organizer_name')
+        ->get();
+
+    return view('registrados', ['eventosRegistrados' => $eventosRegistrados]);
+}
+public function noRegistrados()
+{
+    $eventosNoRegistrados = DB::table('events')
+        ->leftJoin('event_attendees', 'events.id', '=', 'event_attendees.event_id')
+        ->where(function($query) {
+            $query->whereNull('event_attendees.event_id')
+                  ->orWhere('event_attendees.status', '!=', 'CONFIRMED');
+        })
+        ->select('events.id', 'events.title', 'events.image_url', 'events.organized_id')
+        ->get();
+
+    foreach ($eventosNoRegistrados as $evento) {
+        $evento->organizer_name = DB::table('users')
+            ->where('id', $evento->organized_id)
+            ->value('name');
+    }
+
+    return view('noRegistrados', ['eventosNoRegistrados' => $eventosNoRegistrados]);
+}
+
+
+
+
+
 public function subscribe($eventId)
     {
         $userId = auth()->user()->id;

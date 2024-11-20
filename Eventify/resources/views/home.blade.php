@@ -144,6 +144,7 @@
     justify-content: end;
     margin: 30px;
 }
+
     </style>
 </head>
 
@@ -225,11 +226,11 @@
     @endcan
 
     <nav class="navbar navbar-expand-lg custom-navbar">
-    <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Eventos
+                    Tipos
                 </a>
                 <div class="dropdown-menu custom-dropdown">
                     <a class="dropdown-item" href="{{ route('musica') }}">Música</a>
@@ -237,6 +238,16 @@
                     <a class="dropdown-item" href="{{ route('tecnologia') }}">Tecnología</a>
                 </div>
             </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="eventDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Eventos
+                </a>
+                <div class="dropdown-menu custom-dropdown">
+                    <a class="dropdown-item" href="{{ route('Registrados') }}">Registrados</a>
+                    <a class="dropdown-item" href="{{ route('Noregistrados') }}">No registrados</a>
+                </div>
+            </li>
+
         </ul>
     </div>
 </nav>
@@ -337,6 +348,7 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>
