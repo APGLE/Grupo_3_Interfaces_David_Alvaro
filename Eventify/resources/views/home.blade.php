@@ -274,7 +274,8 @@
             <div class="col-md-4 mb-4">
                 <div class="card">
                     @if($event->image_url)
-                        <img src="{{ $event->image_url }}" class="card-img-top" alt="Imagen del Evento">
+                    <img src="{{ asset('images/' . $event->image_url) }}" class="card-img-top" alt="Imagen del Evento">
+
                     @endif
 
                     <div class="event-card-body card-body">
