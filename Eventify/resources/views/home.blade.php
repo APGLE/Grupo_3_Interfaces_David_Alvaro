@@ -9,6 +9,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
+        body{
+            background:rgb(250, 243, 238);
+        }
         .header-div {
             background-color: rgb(108, 92, 57);
             display: flex;
@@ -85,18 +88,14 @@
             color: rgb(108, 92, 57);
         }
 
-        .action-buttons {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            display: flex;
+        .action-buttons {     
+            display: contents;
             gap: 5px;
-            
         }
 
         .action-buttons .btn {
-            border-radius: 50%;
-            padding: 8px;
+            width: 100%;
+            margin-bottom: 10px;
             
         }
 
@@ -110,7 +109,7 @@
     border-radius: 8px; 
     display: inline-block; 
     padding: 8px 15px; 
-    margin-left: 31px;
+    margin-left: 30px;
 }
 
 
@@ -225,7 +224,7 @@
         </div>
     @endcan
 
-    <nav class="navbar navbar-expand-lg custom-navbar">
+    <nav class="navbar navbar-expand custom-navbar">
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item dropdown">
@@ -252,7 +251,7 @@
     </div>
 </nav>
 
-<div class="container mt-4">
+<div class="container mt-2">
 
     @if ($events->isEmpty())
         <div class="alert alert-warning">
@@ -268,7 +267,7 @@
 
 
 
-<div class="container mt-4">
+<div class="p-4">
     <div class="row">
         @foreach($events as $event)
             <div class="col-md-4 mb-4">
@@ -279,7 +278,18 @@
                     @endif
 
                     <div class="event-card-body card-body">
-                    <div class="action-buttons">
+                    
+                        <h5 class="card-title">{{ $event->title }}</h5>
+                        <p class="card-text">{{ $event->description }}</p>
+
+                        <ul class="list-unstyled">
+                            <li><strong>Ubicación:</strong> {{ $event->location }}</li>
+                            <li><strong>Inicio:</strong> {{ \Carbon\Carbon::parse($event->start_time)->format('d M Y, h:i A') }}</li>
+                            <li><strong>Fin:</strong> {{ \Carbon\Carbon::parse($event->end_time)->format('d M Y, h:i A') }}</li>
+                            <li><strong>Precio:</strong> ${{ number_format($event->price, 2) }}</li>
+                            <li><strong>Capacidad Máxima:</strong> {{ $event->max_attendees }}</li>
+                        </ul>
+                        <div class="action-buttons">
                             <a href="{{ route('events.edit', $event->id) }}" class="btn btn-sm" style="background-color: rgb(108, 92, 57); color:white">
                                 Editar
                             </a>
@@ -291,17 +301,6 @@
                                 </button>
                             </form>
                         </div>
-                        <h5 class="card-title">{{ $event->title }}</h5>
-                        <p class="card-text">{{ $event->description }}</p>
-
-                        <ul class="list-unstyled">
-                            <li><strong>Ubicación:</strong> {{ $event->location }}</li>
-                            <li><strong>Inicio:</strong> {{ \Carbon\Carbon::parse($event->start_time)->format('d M Y, h:i A') }}</li>
-                            <li><strong>Fin:</strong> {{ \Carbon\Carbon::parse($event->end_time)->format('d M Y, h:i A') }}</li>
-                            <li><strong>Precio:</strong> ${{ number_format($event->price, 2) }}</li>
-                            <li><strong>Capacidad Máxima:</strong> {{ $event->max_attendees }}</li>
-                        </ul>
-
                         @if(Auth::check())
                             @php
                                 $attendee = DB::table('event_attendees')
@@ -314,14 +313,14 @@
                             @if($attendee)
                                 <form action="{{ route('events.unsubscribe', $event->id) }}" method="POST">
                                     @csrf
-                                    <button type="submit" class="btn btn-warning btn-sm">
-                                        Desapuntarse
+                                    <button type="submit" class="btn btn-warning btn-sm w-100">
+                                        Anular registro
                                     </button>
                                 </form>
                             @else
                                 <form action="{{ route('events.subscribe', $event->id) }}" method="POST">
                                     @csrf
-                                    <button type="submit" class="btn btn-success btn-sm">
+                                    <button type="submit" class="btn btn-success btn-sm w-100">
                                         Apuntarse
                                     </button>
                                 </form>
