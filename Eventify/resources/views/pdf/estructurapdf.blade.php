@@ -11,6 +11,10 @@
         <ul>
             @foreach($events as $event)
                 <li>
+                    @if ($event->base64_image)
+                        <img src="{{ $event->base64_image }}" alt="Imagen del evento" style="width: 100px; height: 100px;"/>
+                    @endif
+                    <br>
                     <strong>{{ $event->title }}</strong><br>
                     <strong>Ubicación:</strong> {{ $event->location }}<br>
                     <strong>Inicio:</strong> {{ \Carbon\Carbon::parse($event->start_time)->format('d M Y, h:i A') }}<br>
