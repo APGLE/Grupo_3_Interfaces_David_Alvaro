@@ -1,1 +1,1 @@
-Tiene que configurar el php.ini quitando el ";" de extension=gb
+Para que el pdf llegue correctamente tiene que meterse con xampp o o desde el directorio de php a configurar php.ini, ahi tiene que buscar ";extension=gd" y quitarle e ";", asi deberia dejar de fallar
