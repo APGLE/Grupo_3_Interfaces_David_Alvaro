@@ -36,9 +36,10 @@
         }
 
         .evento-card img {
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            height: 180px;
             object-fit: cover;
-            height: 200px;
-            width: 100%;
         }
 
         .evento-card .card-body {
