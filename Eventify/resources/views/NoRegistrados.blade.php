@@ -11,8 +11,8 @@
                 @foreach ($eventosNoRegistrados as $evento)
                     <div class="col-md-4 mb-4">
                         <div class="card evento-card">
-                            <img src="{{ asset('storage/' . $evento->image_url) }}" class="card-img-top" alt="{{ $evento->title }}">
-                            <div class="card-body">
+                        <img src="{{ asset('Images/' . $evento->image_url) }}" class="card-img-top" alt="{{ $evento->title }}">
+                        <div class="card-body">
                                 <h5 class="card-title">{{ $evento->title }}</h5>
                                 <p class="card-text"><strong>Organizador:</strong> {{ $evento->organizer_name }}</p>
                             </div>
