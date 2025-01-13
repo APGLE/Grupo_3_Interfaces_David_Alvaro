@@ -1,40 +1,94 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
+namespace Tests\Unit;
+
+use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\User;
 
 class RegisterTest extends TestCase
 {
-    public function testUserRegistration()
+    use RefreshDatabase;
+
+    public function testMostrarFormularioDeRegistro()
     {
-        // Simula los datos de registro
-        $userData = [
-            'username' => 'testuser',
-            'email' => 'testuser@example.com',
-            'password' => 'password123',
-        ];
-
-        // Llama a la función de registro (esto es solo un ejemplo, ajusta según tu implementación)
-        $result = $this->registerUser($userData);
-
-        // Verifica que el registro fue exitoso
-        $this->assertTrue($result['success']);
-        $this->assertEquals('User registered successfully', $result['message']);
+        $response = $this->get('/register');
+        $response->assertStatus(200);
+        $response->assertViewIs('auth.register');
     }
 
-    private function registerUser($userData)
+    public function testRegistroConDatosValidos()
     {
-        // Aquí iría la lógica de registro de usuario
-        // Este es solo un ejemplo, debes reemplazarlo con tu implementación real
-        if ($userData['username'] && $userData['email'] && $userData['password']) {
-            return [
-                'success' => true,
-                'message' => 'User registered successfully',
-            ];
+        $response = $this->post('/register', [
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ]);
+
+        // Agregar mensajes de depuración
+        if (!$response->isRedirect()) {
+            dd('No redirigido', $response->getContent());
         }
 
-        return [
-            'success' => false,
-            'message' => 'Registration failed',
-        ];
+        $response->assertRedirect('/home');
+
+        if (!auth()->check()) {
+            dd('Usuario no autenticado');
+        }
+
+        $this->assertAuthenticated();
+        $this->assertDatabaseHas('users', [
+            'email' => 'test@example.com',
+        ]);
+    }
+
+    public function testRegistroConEmailDuplicado()
+    {
+        $user = User::factory()->create([
+            'email' => 'test@example.com',
+        ]);
+
+        $response = $this->post('/register', [
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ]);
+
+        $response->assertSessionHasErrors(['email']);
+        $this->assertGuest();
+    }
+
+    public function testCamposObligatorios()
+    {
+        $response = $this->post('/register', []);
+        $response->assertSessionHasErrors(['name', 'email', 'password']);
+    }
+
+    public function testPasswordConfirmacionNoCoincide()
+    {
+        $response = $this->post('/register', [
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'different-password',
+        ]);
+
+        $response->assertSessionHasErrors(['password']);
+        $this->assertGuest();
+    }
+
+    public function testEmailInvalido()
+    {
+        $response = $this->post('/register', [
+            'name' => 'Test User',
+            'email' => 'email-invalido',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ]);
+
+        $response->assertSessionHasErrors(['email']);
+        $this->assertGuest();
     }
 }

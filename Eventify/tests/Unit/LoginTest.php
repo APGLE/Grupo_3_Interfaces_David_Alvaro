@@ -48,4 +48,34 @@ class LoginTest extends TestCase
         $response->assertSessionHasErrors();
         $this->assertGuest();
     }
+
+    public function testCamposObligatorios()
+    {
+        $response = $this->post('/login', []);
+        $response->assertSessionHasErrors(['email', 'password']);
+    }
+
+    public function testEmailInvalido()
+    {
+        $response = $this->post('/login', [
+            'email' => 'email-invalido',
+            'password' => 'password',
+        ]);
+        $response->assertSessionHasErrors(['email']);
+    }
+
+    public function testRedireccionDespuesDelLogin()
+    {
+        $user = User::factory()->create([
+            'email' => 'test@example.com',
+            'password' => bcrypt($password = 'password'),
+        ]);
+
+        $response = $this->post('/login', [
+            'email' => 'test@example.com',
+            'password' => $password,
+        ]);
+
+        $response->assertRedirect('/home');
+    }
 }

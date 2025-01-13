@@ -68,7 +68,6 @@ Route::post('/events/create', [EventController::class, 'store']);
 Route::get('/events/{id}', [EventController::class, 'show'])->name('events.show');
 Route::get('/events/{id}/edit', [EventController::class, 'edit'])->name('events.edit');
 
-
 Route::delete('/events/{id}', [EventController::class, 'destroy'])->name('events.destroy');
 Route::put('/events/{id}', [EventController::class, 'update'])->name('events.update');
 
@@ -82,9 +81,5 @@ Route::post('/enviar.pdf',[MailController::class, 'enviarpdf'])->name('enviar.pd
 Route::post('/events/{event}/subscribe', [EventController::class, 'subscribe'])->name('events.subscribe');
 Route::post('/events/{event}/unsubscribe', [EventController::class, 'unsubscribe'])->name('events.unsubscribe');
 
-
 Route::get('/home/registrados', [EventController::class, 'Registrados'])->name('Registrados');
 Route::get('/home/noregistrados', [EventController::class, 'noRegistrados'])->name('Noregistrados');
-
-
-
