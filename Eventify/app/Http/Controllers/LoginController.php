@@ -14,6 +14,7 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
+
         // Validar las credenciales
         $credentials = $request->only('email', 'password');
         $user = \App\Models\User::where('email', $request->email)->first();

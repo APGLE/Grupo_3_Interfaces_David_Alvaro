@@ -43,6 +43,12 @@ return [
             'visibility' => 'public',
             'throw' => false,
         ],
+        
+        'images' => [
+            'driver' => 'local',
+            'root' => storage_path('app/images'),
+            'throw' => false,
+        ],
 
         's3' => [
             'driver' => 's3',

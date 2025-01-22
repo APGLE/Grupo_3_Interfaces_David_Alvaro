@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Feature;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -27,16 +27,7 @@ class RegisterTest extends TestCase
         ]);
 
         // Agregar mensajes de depuración
-        if (!$response->isRedirect()) {
-            dd('No redirigido', $response->getContent());
-        }
-
         $response->assertRedirect('/home');
-
-        if (!auth()->check()) {
-            dd('Usuario no autenticado');
-        }
-
         $this->assertAuthenticated();
         $this->assertDatabaseHas('users', [
             'email' => 'test@example.com',
@@ -45,7 +36,7 @@ class RegisterTest extends TestCase
 
     public function testRegistroConEmailDuplicado()
     {
-        $user = User::factory()->create([
+        User::factory()->create([
             'email' => 'test@example.com',
         ]);
 
