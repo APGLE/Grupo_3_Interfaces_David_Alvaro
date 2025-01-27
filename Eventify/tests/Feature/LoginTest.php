@@ -10,70 +10,70 @@ class LoginTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testMostrarFormularioDeLogin()
+    public function testCargarFormularioLogin()
     {
         $response = $this->get('/login');
         $response->assertStatus(200);
         $response->assertViewIs('auth.login');
     }
 
-    public function testLoginConCredencialesValidas()
+    public function testIniciarSesionConCredencialesValidas()
     {
-        $user = User::factory()->create([
-            'email' => 'test@example.com',
-            'password' => bcrypt($password = 'password'),
+        $usuario = User::factory()->create([
+            'email' => 'usuario@example.com',
+            'password' => bcrypt($clave = 'clave_valida'),
         ]);
 
         $response = $this->post('/login', [
-            'email' => 'test@example.com',
-            'password' => $password,
+            'email' => 'usuario@example.com',
+            'password' => $clave,
         ]);
 
         $response->assertRedirect('/home');
-        $this->assertAuthenticatedAs($user);
+        $this->assertAuthenticatedAs($usuario);
     }
 
-    public function testLoginConCredencialesInvalidas()
+    public function testIniciarSesionConCredencialesInvalidas()
     {
-        $user = User::factory()->create([
-            'email' => 'test@example.com',
-            'password' => bcrypt('password'),
+        $usuario = User::factory()->create([
+            'email' => 'usuario@example.com',
+            'password' => bcrypt('clave_valida'),
         ]);
 
         $response = $this->post('/login', [
-            'email' => 'test@example.com',
-            'password' => 'invalid-password',
+            'email' => 'usuario@example.com',
+            'password' => 'clave_invalida',
         ]);
 
         $response->assertSessionHasErrors();
         $this->assertGuest();
     }
 
-    public function testCamposObligatorios()
+    public function testValidarCamposObligatorios()
     {
         $response = $this->post('/login', []);
         $response->assertSessionHasErrors(['email', 'password']);
     }
 
-    public function testEmailInvalido()
+    public function testCorreoElectronicoInvalido()
     {
         $response = $this->post('/login', [
-            'email' => 'email-invalido',
-            'password' => 'password',
+            'email' => 'correo_invalido',
+            'password' => 'clave_valida',
         ]);
         $response->assertSessionHasErrors(['email']);
     }
 
-    public function testRedireccionDespuesDelLogin()
+    public function testRedireccionCorrectaDespuesDelLogin()
     {
-        $user = User::factory()->create([
-            'email' => 'test@example.com',
-            'password' => bcrypt($password = 'password'),
+        $usuario = User::factory()->create([
+            'email' => 'correo@example.com',
+            'password' => bcrypt($clave = 'clave_valida'),
         ]);
 
         $response = $this->post('/login', [
-            'email' => 'test@example.com',
-            'password' => $password,
+            'email' => 'correo@example.com',
+            'password' => $clave,
         ]);
 
         $response->assertRedirect('/home');

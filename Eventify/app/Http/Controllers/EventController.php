@@ -3,19 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\EventAttendee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
-use App\Models\EventAttendee;
-
-
 
 class EventController extends Controller
 {
-
     public function store(Request $request)
     {
         try {
+            // Validaciones
             $validator = Validator::make($request->all(), [
                 'title' => 'required|string|max:255',
                 'category_id' => 'required|integer',
@@ -27,22 +25,13 @@ class EventController extends Controller
                 'longitude' => 'nullable|numeric',
                 'price' => 'nullable|numeric',
                 'max_attendees' => 'nullable|integer',
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
 
-            // Verificar si la validación falla
             if ($validator->fails()) {
                 return response()->json(['errors' => $validator->errors()], 422);
             }
-
-            // Manejo de la carga de la imagen
-            $imageName = null;
-            if ($request->hasFile('image')) {
-                $imageName = time() . '.' . $request->image->extension();
-                $request->image->move(public_path('images'), $imageName);
-            }
-
-            // Crear el evento en la base de datos con el ID del usuario autenticado como organized_id
+            $imageName = $request->file('image')->store('images', 'public');
             $event = Event::create([
                 'title' => $request->title,
                 'category_id' => $request->category_id,
@@ -54,16 +43,15 @@ class EventController extends Controller
                 'longitude' => $request->longitude ?? 0.0,
                 'price' => $request->price ?? 0.0,
                 'max_attendees' => $request->max_attendees ?? 0,
-                'organized_id' => auth()->id(),  // Asignar el ID del usuario autenticado
+                'organized_id' => auth()->id(),
                 'image_url' => $imageName,
                 'deleted' => 0,
             ]);
 
-            // Confirmación de creación de evento
             return response()->json(['message' => 'Evento creado exitosamente'], 201);
         } catch (\Exception $e) {
             \Log::error("Error al guardar el evento: " . $e->getMessage());
-            return response()->json(['message' => 'Error en el servidor.' . $e->getMessage()], 500);
+            return response()->json(['message' => 'Error en el servidor.'], 500);
         }
     }
 
@@ -71,113 +59,101 @@ class EventController extends Controller
     {
         $event = Event::findOrFail($id);
         $event->update($request->all());
-
         return redirect()->route('home')->with('success', 'Evento actualizado exitosamente.');
     }
 
     public function destroy($id)
     {
-        $event = Event::findOrFail($id); 
-        $event->delete(); 
-
-        return redirect()->route('home')->with('success', 'Evento eliminado exitosamente.');
+    $event = Event::findOrFail($id);
+    if ($event->organized_id !== auth()->id()) {
+        return response()->json(['error' => 'No tienes permiso para eliminar este evento.'], 403);
     }
+    $event->delete();
+
+    return response()->json(['message' => 'Evento eliminado exitosamente'], 200);
+}
+
 
     public function edit($id)
     {
         $event = Event::findOrFail($id);
         return view('events.edit', compact('event'));
     }
+
     public function musica()
-{
-    $eventos = Event::where('category_id', 1)->get();
-    return view('home', ['events' => $eventos, 'categoria' => 'Música']);
-}
-
-public function deporte()
-{
-    $eventos = Event::where('category_id', 2)->get();
-    return view('home', ['events' => $eventos, 'categoria' => 'Deporte']);
-}
-
-public function tecnologia()
-{
-    $eventos = Event::where('category_id', 3)->get();
-    return view('home', ['events' => $eventos, 'categoria' => 'Tecnología']);
-}
-
-public function registrados()
-{
-    $eventosRegistrados = DB::table('event_attendees')
-        ->join('events', 'event_attendees.event_id', '=', 'events.id')
-        ->join('users', 'events.organized_id', '=', 'users.id')
-        ->where('event_attendees.status', 'CONFIRMED')
-        ->select('event_attendees.register_at', 'events.title', 'events.image_url', 'users.name as organizer_name')
-        ->get();
-
-    return view('registrados', ['eventosRegistrados' => $eventosRegistrados]);
-}
-public function noRegistrados()
-{
-    $eventosNoRegistrados = DB::table('events')
-        ->leftJoin('event_attendees', 'events.id', '=', 'event_attendees.event_id')
-        ->where(function($query) {
-            $query->whereNull('event_attendees.event_id')
-                  ->orWhere('event_attendees.status', '!=', 'CONFIRMED');
-        })
-        ->select('events.id', 'events.title', 'events.image_url', 'events.organized_id')
-        ->get();
-
-    foreach ($eventosNoRegistrados as $evento) {
-        $evento->organizer_name = DB::table('users')
-            ->where('id', $evento->organized_id)
-            ->value('name');
+    {
+        $eventos = Event::where('category_id', 1)->get();
+        return view('home', ['events' => $eventos, 'categoria' => 'Música']);
     }
 
-    return view('noRegistrados', ['eventosNoRegistrados' => $eventosNoRegistrados]);
-}
-
-
-
-
-
-public function subscribe($eventId)
+    public function deporte()
     {
-        $userId = auth()->user()->id;
+        $eventos = Event::where('category_id', 2)->get();
+        return view('home', ['events' => $eventos, 'categoria' => 'Deporte']);
+    }
 
-        $attendee = EventAttendee::where('event_id', $eventId)
-                                 ->where('user_id', $userId)
-                                 ->where('deleted', 0)
-                                 ->first();
+    public function tecnologia()
+    {
+        $eventos = Event::where('category_id', 3)->get();
+        return view('home', ['events' => $eventos, 'categoria' => 'Tecnología']);
+    }
 
-        if (!$attendee) {
-            EventAttendee::create([
-                'event_id' => $eventId,
-                'user_id' => $userId,
-                'status' => 'CONFIRMED',
-                'register_at' => now(),
-                'deleted' => 0, 
-            ]);
+    public function registrados()
+    {
+        $eventosRegistrados = DB::table('event_attendees')
+            ->join('events', 'event_attendees.event_id', '=', 'events.id')
+            ->join('users', 'events.organized_id', '=', 'users.id')
+            ->where('event_attendees.status', 'CONFIRMED')
+            ->select('event_attendees.register_at', 'events.title', 'events.image_url', 'users.name as organizer_name')
+            ->get();
+
+        return view('registrados', ['eventosRegistrados' => $eventosRegistrados]);
+    }
+
+    public function noRegistrados()
+    {
+        $eventosNoRegistrados = DB::table('events')
+            ->leftJoin('event_attendees', 'events.id', '=', 'event_attendees.event_id')
+            ->where(function ($query) {
+                $query->whereNull('event_attendees.event_id')
+                      ->orWhere('event_attendees.status', '!=', 'CONFIRMED');
+            })
+            ->select('events.id', 'events.title', 'events.image_url', 'events.organized_id')
+            ->get();
+
+        foreach ($eventosNoRegistrados as $evento) {
+            $evento->organizer_name = DB::table('users')
+                ->where('id', $evento->organized_id)
+                ->value('name');
         }
+
+        return view('noRegistrados', ['eventosNoRegistrados' => $eventosNoRegistrados]);
+    }
+
+    public function subscribe($eventId)
+    {
+        $userId = auth()->id();
+
+        EventAttendee::updateOrCreate(
+            ['event_id' => $eventId, 'user_id' => $userId],
+            ['status' => 'CONFIRMED', 'register_at' => now(), 'deleted' => 0]
+        );
 
         return back();
     }
 
     public function unsubscribe($eventId)
     {
-        $userId = auth()->user()->id;
+        $userId = auth()->id();
 
         $attendee = EventAttendee::where('event_id', $eventId)
                                  ->where('user_id', $userId)
-                                 ->where('deleted', 0)
                                  ->first();
 
         if ($attendee) {
             $attendee->update(['deleted' => 1, 'status' => 'CANCELLED']);
         }
 
-        return back(); 
+        return back();
     }
-
-
 }

@@ -83,3 +83,4 @@ Route::post('/events/{event}/unsubscribe', [EventController::class, 'unsubscribe
 
 Route::get('/home/registrados', [EventController::class, 'Registrados'])->name('Registrados');
 Route::get('/home/noregistrados', [EventController::class, 'noRegistrados'])->name('Noregistrados');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
