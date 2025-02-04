@@ -34,7 +34,7 @@ class UserFactory extends Factory
             'password' => Hash::make('12345678'),
             'email_confirmed' => 1,
             'actived' => 1,
-            'role' => 'admin',
+            'role' => 'a',
         ]);
     }
 }
