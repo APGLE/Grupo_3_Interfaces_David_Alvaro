@@ -12,10 +12,22 @@
 9. [Administración de usuarios (ADMIN)](#administracion-de-usuarios-admin)
 10. [Editar eventos (ADMIN)](#editar-eventos-admin)
 11. [Pruebas unitarias](#pruebas-unitarias)
-    * [Register](#register)
-    * [Login](#login)
-    * [EventController](#eventcontroller)
-
+   * [Register](#register)
+   * [Login](#login)
+   * [EventController](#eventcontroller)
+12. [Endpoints](#endpoints)
+   * [Registrar usuario]
+   * [Login usuario]
+   * [Usuario administrador]
+   * [Conseguir todos los datos]
+   * [Coger todos los usuarios]
+   * [Coger usuario en especifico]
+   * [Coger todos los eventos]
+   * [Coger evento en especifico]
+   * [Crear evento]
+   * [Formulario del evento]
+   * [Editar evento]
+   * [Eliminar evento]
 ---
 
 ### Página inicial
@@ -202,5 +214,98 @@ Los administradores tienen la capacidad de editar los eventos existentes.
    - **Prueba:** Cancelar la suscripción de un usuario a un evento al que previamente se había suscrito.  
    - **Resultado esperado:** La suscripción es cancelada y el estado de la suscripción se cambia a `CANCELLED`, marcando el registro como eliminado (soft delete).
 
+---
 
-![Pruebas unitarias/EventController](images/)
+### **Endpoints**
+Aqui tendremos todos la información de lo que le tendremos que solicitar al postman, para poder obtener la informacion de cada endpoint.
+
+Tener en cuenta de hacer cada postman en una ventana diferente
+
+1. **Registrar usuario**
+Post http://34.0.199.77:80/register
+
+{
+  "name": "tu nombre",
+  "email": "tu correo",
+  "password": "tu contraseña"
+  "password_confirmation": "tu contraseña"
+}
+
+Al hacer esto le mandara un correo para verificar su usuario
+Al registrar o loguear con un usuario cuando quiera hacerlo con otro usuario tendra que borrar las cookies
+
+2. **Logear usuario**
+Post http://34.0.199.77:80/login
+
+{
+  "email": "tu correo",
+  "password": "tu contraseña"
+}
+
+Para hacer el siguiente paso tendra en postman que borrar las cookies del usuario en el con el que se ha registrado
+
+3. **Usuario administrador**
+
+{
+  "email": "admin@admin.com",
+  "password": "12345678"
+}
+
+4. **Conseguir todos los datos**
+Get http://34.0.199.77:80/home
+
+5. **Coger todos los usuarios**
+Get http://34.0.199.77:80/home/users
+
+6. **Coger usuario en especifico**
+Get http://34.0.199.77:80/home/users/{id}
+
+7. **coger todos los eventos**
+Get http://34.0.199.77:80/home/events
+
+8. **Coger evento en especifico**
+Get http://34.0.199.77:80/home/events/{id}
+
+9. **Crear evento**
+Post http://34.0.199.77:80/events/create
+(este en vez de con raw en body ahi que usar form-data)
+
+Key	Value	Type
+id	7	Text
+title	Mi evento	Text
+organized_id 1 Text
+category_id	1	Text
+description	Descripción...	Text
+start_time	2025-03-15 10:00:00	Text
+end_time	2025-03-15 12:00:00	Text
+location	Ciudad	Text
+latitude	40.416775	Text
+longitude	-3.703790	Text
+price	20.00	Text
+max_attendees	100	Text
+image	[elige el archivo de dentro de tu ordenandor]	File
+deleted	0	Text
+created_at 2025-03-15 10:00:00 Text
+updated_at 2025-03-15 10:00:00 Text
+
+10. **Conseguir el formulario del evento**
+Get http://34.0.199.77:80/events/1/edit
+
+11. **Editar evento**
+Put http://34.0.199.77:80/events/"id"
+
+{
+  "title": "Evento Actualizado",
+  "category_id": 2,
+  "description": "Descripción actualizada",
+  "start_time": "2025-03-15 11:00:00",
+  "end_time": "2025-03-15 13:00:00",
+  "location": "Otra Ciudad",
+  "latitude": 40.416775,
+  "longitude": -3.703790,
+  "price": 25.00,
+  "max_attendees": 150
+}
+
+12. **Eliminar evento**
+Delete http://34.0.199.77:80/events/"id"
